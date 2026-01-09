@@ -1,4 +1,5 @@
 from flask import Blueprint, request, jsonify, current_app, render_template
+import sqlite3
 
 # preprocessing
 from src.preprocessing.schema import validate_input
@@ -93,3 +94,29 @@ def predict_form():
             "index.html",
             result={"prediction": "Error", "probability": str(e)}
         )
+
+@api_blueprint.route("/history", methods=["GET"])
+def history():
+    conn = sqlite3.connect("predictions.db")
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        SELECT timestamp, transaction_json, fraud_prediction, fraud_probability
+        FROM prediction_logs
+        ORDER BY timestamp DESC
+        LIMIT 50
+    """)
+
+    rows = cursor.fetchall()
+    conn.close()
+
+    history_data = []
+    for row in rows:
+        history_data.append({
+            "timestamp": row[0],
+            "transaction": row[1],
+            "prediction": "Fraud" if row[2] == 1 else "Not Fraud",
+            "probability": round(row[3], 4)
+        })
+
+    return render_template("history.html", history=history_data)

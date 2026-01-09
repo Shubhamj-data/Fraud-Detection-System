@@ -22,3 +22,12 @@ Reports/
 
 # Logs
 *.log
+
+# Model artifacts
+artifacts/random_forest_model.pkl
+artifacts/logistic_model.pkl
+
+# Raw data
+data/
+data/raw/
+*.csv

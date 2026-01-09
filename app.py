@@ -14,7 +14,7 @@ def create_app():
     # Initialize database
     init_db()
 
-    # Register routes
+    # Register API routes
     app.register_blueprint(api_blueprint)
 
     return app

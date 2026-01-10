@@ -114,6 +114,9 @@ def predict_form():
         prediction = int(model.predict(X)[0])
         fraud_prob = float(model.predict_proba(X)[0][1])
 
+        # 🔥 ADD THIS LINE
+        log_to_google_sheets(input_data, prediction, fraud_prob, "v1.0")
+        
         prediction_label = "Fraud" if prediction == 1 else "Legitimate"
 
         return render_template(

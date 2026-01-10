@@ -5,8 +5,18 @@ from src.api.sheets_logger import log_to_google_sheets
 
 import json
 
-with open("artifacts/unique_values.json") as f:
-    UNIQUE_VALUES = json.load(f)
+import os
+import json
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
+UNIQUE_VALUES_PATH = os.path.join(BASE_DIR, "artifacts", "unique_values.json")
+
+try:
+    with open(UNIQUE_VALUES_PATH) as f:
+        UNIQUE_VALUES = json.load(f)
+except FileNotFoundError:
+    UNIQUE_VALUES = {}
+    print("⚠️ unique_values.json not found — dropdowns disabled")
 
 
 # preprocessing

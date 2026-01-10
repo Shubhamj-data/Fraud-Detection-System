@@ -26,7 +26,7 @@ def get_sheet():
     sheet = client.open("Fraud_Detection_DB").worksheet("prediction_logs")
     return sheet
 
-
+import traceback
 
 def log_to_google_sheets(input_data, prediction, probability, model_version):
     try:
@@ -48,13 +48,20 @@ def log_to_google_sheets(input_data, prediction, probability, model_version):
             input_data.get("hour_of_day"),
             input_data.get("day_of_week"),
             input_data.get("is_weekend"),
-            prediction,
-            probability,
+            int(prediction),
+            float(probability),
             model_version
         ]
 
-        sheet.append_row(row, value_input_option="USER_ENTERED")
-        print("✅ Data successfully written to Google Sheets")
+        # IMPORTANT: use append_rows instead of append_row
+        sheet.append_rows([row], value_input_option="USER_ENTERED")
+
+        print("✅ Google Sheets updated successfully")
 
     except Exception as e:
-        print("❌ Google Sheets logging failed:", e)
+        print("❌ Google Sheets logging failed")
+        print("Error:", str(e))
+        traceback.print_exc()
+
+        # VERY IMPORTANT: re-raise so Render logs show it
+        raise

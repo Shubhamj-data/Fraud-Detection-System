@@ -60,3 +60,18 @@ def train_random_forest():
 
 if __name__ == "__main__":
     train_random_forest()
+
+def train_random_forest_retrain(X, y):
+    """
+    Retrain Random Forest on provided X, y
+    """
+    model = RandomForestClassifier(
+        n_estimators=200,
+        max_depth=20,
+        min_samples_split=10,
+        min_samples_leaf=5,
+        n_jobs=-1,
+        random_state=42
+    )
+    model.fit(X, y)
+    return model

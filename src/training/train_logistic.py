@@ -53,6 +53,20 @@ def train_logistic():
     joblib.dump(model, "artifacts/logistic_model.pkl")
     print("\nLogistic model saved to artifacts/logistic_model.pkl")
 
+def train_logistic_retrain(X, y):
+    """
+    Train Logistic Regression on provided X, y
+    Used for retraining pipeline
+    """
+    model = LogisticRegression(
+        max_iter=1000,
+        n_jobs=-1,
+        class_weight="balanced"
+    )
+    model.fit(X, y)
+    return model
+
 
 if __name__ == "__main__":
     train_logistic()
+

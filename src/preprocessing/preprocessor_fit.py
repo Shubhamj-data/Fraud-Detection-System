@@ -13,7 +13,7 @@ def fit_preprocessor(csv_path: str):
     """
 
     # Load data
-    data = pd.read_csv(csv_path)
+    data = pd.read_csv(csv_path, low_memory=False)
 
     # Keep only required features + target
     features = REQUIRED_FEATURES + ["fraud_flag"]

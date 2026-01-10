@@ -1,13 +1,6 @@
-from flask import Blueprint, request, jsonify, current_app, render_template
-import sqlite3
-
-from src.api.sheets_logger import log_to_google_sheets
-
-import json
-
 import os
 import json
-
+import pandas as pd
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
 UNIQUE_VALUES_PATH = os.path.join(BASE_DIR, "artifacts", "unique_values.json")
 
@@ -17,6 +10,13 @@ try:
 except FileNotFoundError:
     UNIQUE_VALUES = {}
     print("⚠️ unique_values.json not found — dropdowns disabled")
+
+from src.preprocessing.preprocessor_batch import batch_transform
+
+from flask import Blueprint, request, jsonify, current_app, render_template
+import sqlite3
+
+from src.api.sheets_logger import log_to_google_sheets
 
 
 # preprocessing
@@ -88,35 +88,53 @@ def predict():
 @api_blueprint.route("/predict-form", methods=["POST"])
 def predict_form():
     try:
-        input_data = dict(request.form)
+        input_data = {
+            "transaction type": request.form["transaction type"],
+            "merchant_category": request.form["merchant_category"],
+            "transaction_status": "SUCCESS",
+            "sender_age_group": request.form["sender_age_group"],
+            "receiver_age_group": request.form["receiver_age_group"],
+            "sender_state": request.form["sender_state"],
+            "sender_bank": request.form["sender_bank"],
+            "receiver_bank": request.form["receiver_bank"],
+            "device_type": request.form["device_type"],
+            "network_type": request.form["network_type"],
+            "hour_of_day": int(request.form["hour_of_day"]),
+            "day_of_week": request.form["day_of_week"],
+            "is_weekend": int(request.form["is_weekend"]),
+            "amount (INR)": float(request.form["amount (INR)"])
+        }
 
-        # type conversion
-        input_data["amount (INR)"] = float(input_data["amount (INR)"])
-        input_data["hour_of_day"] = int(input_data["hour_of_day"])
-        input_data["is_weekend"] = int(input_data["is_weekend"])
+        df = pd.DataFrame([input_data])
 
-        validate_input(input_data)
+        X = batch_transform(df)
 
-        X = transform_input(input_data)
         model = current_app.model
 
         prediction = int(model.predict(X)[0])
-        probability = float(model.predict_proba(X)[0][1])
+        fraud_prob = float(model.predict_proba(X)[0][1])
 
-        log_prediction(input_data, prediction, probability, "v1.0")
+        prediction_label = "Fraud" if prediction == 1 else "Legitimate"
 
-        result = {
-            "prediction": "Fraud" if prediction == 1 else "Not Fraud",
-            "probability": round(probability, 4)
-        }
-
-        return render_template("index.html", result=result)
+        return render_template(
+            "index.html",
+            result={
+                "prediction": prediction_label,
+                "probability": f"{fraud_prob:.4f}"
+            },
+            options=UNIQUE_VALUES
+        )
 
     except Exception as e:
         return render_template(
             "index.html",
-            result={"prediction": "Error", "probability": str(e)}
+            result={
+                "prediction": "Error",
+                "probability": str(e)
+            },
+            options=UNIQUE_VALUES
         )
+
 
 @api_blueprint.route("/history", methods=["GET"])
 def history():

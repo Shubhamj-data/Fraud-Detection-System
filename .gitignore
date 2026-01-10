@@ -1,38 +1,80 @@
+# ===============================
 # Python
+# ===============================
 __pycache__/
 *.pyc
 *.pyo
 *.pyd
 
-# Virtual Environment
+# ===============================
+# Virtual Environments
+# ===============================
 venv/
 .env/
+.venv/
 
+# ===============================
 # Jupyter
+# ===============================
 .ipynb_checkpoints/
 
-# Database
-*.db
-
-# Reports & documents
-Reports/
-
-# OS files
+# ===============================
+# OS / Editor
+# ===============================
 .DS_Store
+Thumbs.db
 
+# ===============================
 # Logs
+# ===============================
 *.log
 
-# Model artifacts
-artifacts/random_forest_model.pkl
-artifacts/logistic_model.pkl
+# ===============================
+# Databases
+# ===============================
+*.db
 
-# Raw data
+# ===============================
+# Raw & Generated Data
+# ===============================
 data/
 data/raw/
+data/processed/
 *.csv
 
-# Google credentials
-credentials/
-*.json
+# ===============================
+# Model Artifacts (keep ONLY production model)
+# ===============================
+artifacts/random_forest_model.pkl
+artifacts/logistic_model.pkl
+artifacts/*_new.pkl
 
+# ⚠️ KEEP THIS FILE COMMITTED:
+!artifacts/xgboost_model.pkl
+!artifacts/feature_columns.pkl
+!artifacts/scaler.pkl
+!artifacts/unique_values.json
+
+# ===============================
+# Credentials (NEVER COMMIT)
+# ===============================
+credentials/
+*.env
+*.key
+*.pem
+
+# ===============================
+# Reports / Exports
+# ===============================
+Reports/
+export_db_to_csv.py
+
+# ===============================
+# Local Testing
+# ===============================
+test_sheets.py
+
+# ===============================
+# Static files (if using CDN)
+# ===============================
+static/

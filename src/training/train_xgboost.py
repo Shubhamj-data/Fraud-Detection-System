@@ -63,3 +63,22 @@ def train_xgboost():
 
 if __name__ == "__main__":
     train_xgboost()
+
+
+def train_xgboost_retrain(X, y):
+    """
+    Retrain XGBoost on provided X, y
+    """
+    model = XGBClassifier(
+        n_estimators=300,
+        max_depth=6,
+        learning_rate=0.05,
+        subsample=0.8,
+        colsample_bytree=0.8,
+        objective="binary:logistic",
+        eval_metric="auc",
+        n_jobs=-1,
+        random_state=42
+    )
+    model.fit(X, y)
+    return model

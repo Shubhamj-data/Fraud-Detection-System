@@ -34,15 +34,21 @@
             <div>
                 <label class="block text-sm mb-1">Transaction Type</label>
                 <select name="transaction type" class="input">
-                    <option>P2P</option>
-                    <option>P2M</option>
-                    <option>Recharge</option>
+                    {% for v in options["transaction type"] %}
+                    <option value="{{ v }}">{{ v }}</option>
+                    {% endfor %}
                 </select>
+
             </div>
 
             <div>
                 <label class="block text-sm mb-1">Merchant Category</label>
-                <input name="merchant_category" class="input" required>
+                <select name="merchant_category" class="input">
+                    {% for v in options["merchant_category"] %}
+                    <option value="{{ v }}">{{ v }}</option>
+                    {% endfor %}
+                </select>
+
             </div>
 
             <div>
@@ -60,17 +66,32 @@
 
             <div>
                 <label class="block text-sm mb-1">Sender Age Group</label>
-                <input name="sender_age_group" placeholder="26-35" class="input">
+                <select name="sender_age_group" class="input">
+                      {% for v in options["sender_age_group"] %}
+                    <option value="{{ v }}">{{ v }}</option>
+                    {% endfor %}
+                </select>
+
             </div>
 
             <div>
                 <label class="block text-sm mb-1">Receiver Age Group</label>
-                <input name="receiver_age_group" placeholder="18-25" class="input">
+                <select name="receiver_age_group" class="input">
+                  {% for v in options["receiver_age_group"] %}
+                    <option value="{{ v }}">{{ v }}</option>
+                    {% endfor %}
+                </select>
+
             </div>
 
             <div>
                 <label class="block text-sm mb-1">Sender State</label>
-                <input name="sender_state" class="input">
+                <select name="sender_state" class="input">
+                      {% for v in options["sender_state"] %}
+                    <option value="{{ v }}">{{ v }}</option>
+                        {% endfor %}
+                </select>
+
             </div>
 
             <div>

@@ -31,3 +31,8 @@ artifacts/logistic_model.pkl
 data/
 data/raw/
 *.csv
+
+# Google credentials
+credentials/
+*.json
+

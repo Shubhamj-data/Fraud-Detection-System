@@ -1,6 +1,14 @@
 from flask import Blueprint, request, jsonify, current_app, render_template
 import sqlite3
 
+from src.api.sheets_logger import log_to_google_sheets
+
+import json
+
+with open("artifacts/unique_values.json") as f:
+    UNIQUE_VALUES = json.load(f)
+
+
 # preprocessing
 from src.preprocessing.schema import validate_input
 from src.preprocessing.preprocessor_transform import transform_input
@@ -25,7 +33,10 @@ def health():
 # -----------------------
 @api_blueprint.route("/", methods=["GET"])
 def home():
-    return render_template("index.html")
+    return render_template(
+        "index.html",
+        options=UNIQUE_VALUES
+    )
 
 
 # -----------------------
@@ -47,7 +58,9 @@ def predict():
         prediction = int(model.predict(X)[0])
         probability = float(model.predict_proba(X)[0][1])
 
-        log_prediction(input_data, prediction, probability, "v1.0")
+        log_to_google_sheets(input_data, prediction, probability, "v1.0")
+
+
 
         return jsonify({
             "fraud_prediction": prediction,

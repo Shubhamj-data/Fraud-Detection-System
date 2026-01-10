@@ -2,7 +2,10 @@ import gspread
 from google.oauth2.service_account import Credentials
 from datetime import datetime
 
-# Scope for Google Sheets
+import os
+import json
+from google.oauth2.service_account import Credentials
+
 SCOPES = [
     "https://www.googleapis.com/auth/spreadsheets",
     "https://www.googleapis.com/auth/drive"
@@ -14,14 +17,13 @@ SHEET_NAME = "prediction_logs"
 
 
 def get_sheet():
-    creds = Credentials.from_service_account_file(
-        "credentials/google_sheets_key.json",
-        scopes=SCOPES
-    )
-    client = gspread.authorize(creds)
+    creds_dict = json.loads(os.environ["GOOGLE_SHEETS_CREDENTIALS"])
+    creds = Credentials.from_service_account_info(creds_dict, scopes=SCOPES)
 
-    sheet = client.open(SPREADSHEET_NAME).worksheet(SHEET_NAME)
+    client = gspread.authorize(creds)
+    sheet = client.open("Fraud_Detection_DB").worksheet("prediction_logs")
     return sheet
+
 
 
 def log_to_google_sheets(input_data, prediction, probability, model_version):

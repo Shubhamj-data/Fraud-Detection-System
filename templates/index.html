@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Fraud Detection System</title>
+
+    <!-- Tailwind CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        body {
+            background: radial-gradient(circle at top, #1e293b, #020617);
+        }
+    </style>
+</head>
+<body class="min-h-screen text-slate-200">
+
+<div class="max-w-6xl mx-auto px-6 py-10">
+
+    <!-- Header -->
+    <div class="text-center mb-10">
+        <h1 class="text-4xl font-bold text-indigo-400">Fraud Detection System</h1>
+        <p class="text-slate-400 mt-2">
+            Real-time ML-powered transaction risk analysis
+        </p>
+    </div>
+
+    <!-- Card -->
+    <div class="bg-white/10 backdrop-blur-xl rounded-2xl shadow-xl p-8">
+
+        <form method="POST" action="/predict-form" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+            <!-- Transaction Type -->
+            <div>
+                <label class="block text-sm mb-1">Transaction Type</label>
+                <select name="transaction type" class="input">
+                    {% for v in options["transaction type"] %}
+                    <option value="{{ v }}">{{ v }}</option>
+                    {% endfor %}
+                </select>
+
+            </div>
+
+            <div>
+                <label class="block text-sm mb-1">Merchant Category</label>
+                <select name="merchant_category" class="input">
+                    {% for v in options["merchant_category"] %}
+                    <option value="{{ v }}">{{ v }}</option>
+                    {% endfor %}
+                </select>
+
+            </div>
+
+            <div>
+                <label class="block text-sm mb-1">Amount (INR)</label>
+                <input type="number" name="amount (INR)" class="input" required>
+            </div>
+
+            <div>
+                <label class="block text-sm mb-1">Transaction Status</label>
+                <select name="transaction_status" class="input">
+                    <option>SUCCESS</option>
+                    <option>FAILED</option>
+                </select>
+            </div>
+
+            <div>
+                <label class="block text-sm mb-1">Sender Age Group</label>
+                <select name="sender_age_group" class="input">
+                      {% for v in options["sender_age_group"] %}
+                    <option value="{{ v }}">{{ v }}</option>
+                    {% endfor %}
+                </select>
+
+            </div>
+
+            <div>
+                <label class="block text-sm mb-1">Receiver Age Group</label>
+                <select name="receiver_age_group" class="input">
+                  {% for v in options["receiver_age_group"] %}
+                    <option value="{{ v }}">{{ v }}</option>
+                    {% endfor %}
+                </select>
+
+            </div>
+
+            <div>
+                <label class="block text-sm mb-1">Sender State</label>
+                <select name="sender_state" class="input">
+                      {% for v in options["sender_state"] %}
+                    <option value="{{ v }}">{{ v }}</option>
+                        {% endfor %}
+                </select>
+
+            </div>
+
+            <div>
+                <label class="block text-sm mb-1">Sender Bank</label>
+                <input name="sender_bank" class="input">
+            </div>
+
+            <div>
+                <label class="block text-sm mb-1">Receiver Bank</label>
+                <input name="receiver_bank" class="input">
+            </div>
+
+            <div>
+                <label class="block text-sm mb-1">Device Type</label>
+                <select name="device_type" class="input">
+                    <option>Android</option>
+                    <option>iOS</option>
+                    <option>Web</option>
+                </select>
+            </div>
+
+            <div>
+                <label class="block text-sm mb-1">Network Type</label>
+                <select name="network_type" class="input">
+                    <option>4G</option>
+                    <option>5G</option>
+                    <option>WiFi</option>
+                </select>
+            </div>
+
+            <div>
+                <label class="block text-sm mb-1">Hour of Day</label>
+                <input type="number" name="hour_of_day" min="0" max="23" class="input">
+            </div>
+
+            <div>
+                <label class="block text-sm mb-1">Day of Week</label>
+                <select name="day_of_week" class="input">
+                    <option>Monday</option>
+                    <option>Tuesday</option>
+                    <option>Wednesday</option>
+                    <option>Thursday</option>
+                    <option>Friday</option>
+                    <option>Saturday</option>
+                    <option>Sunday</option>
+                </select>
+            </div>
+
+            <div>
+                <label class="block text-sm mb-1">Is Weekend</label>
+                <select name="is_weekend" class="input">
+                    <option value="0">No</option>
+                    <option value="1">Yes</option>
+                </select>
+            </div>
+
+            <!-- Submit -->
+            <div class="md:col-span-3 text-center mt-6">
+                <button class="px-8 py-3 rounded-xl bg-indigo-500 hover:bg-indigo-600 font-semibold transition">
+                    Analyze Transaction
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Result -->
+    {% if result %}
+    <div class="mt-8 text-center">
+        <div class="inline-block px-8 py-6 rounded-2xl 
+            {% if result.prediction == 'Fraud' %}
+                bg-red-500/20 text-red-400
+            {% else %}
+                bg-green-500/20 text-green-400
+            {% endif %}
+        ">
+            <h3 class="text-2xl font-bold">{{ result.prediction }}</h3>
+            <p class="mt-1 text-lg">Risk Probability: {{ result.probability }}</p>
+        </div>
+    </div>
+    {% endif %}
+
+</div>
+
+<!-- Tailwind Input Style -->
+<style>
+    .input {
+        width: 100%;
+        padding: 0.6rem;
+        border-radius: 0.5rem;
+        background: rgba(255,255,255,0.15);
+        border: 1px solid rgba(255,255,255,0.2);
+        color: white;
+    }
+    .input:focus {
+        outline: none;
+        border-color: #6366f1;
+        background: rgba(255,255,255,0.2);
+    }
+</style>
+
+</body>
+</html>

@@ -1,0 +1,9 @@
+flask
+pandas
+scikit-learn
+imbalanced-learn
+xgboost
+joblib
+gspread
+google-auth
+python-dotenv
